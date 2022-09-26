@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  salome
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apis-deploy
+  labels:
+    app: apis 
+    role: backend
+    env: "dev"
+  namespace: salome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apis 
+      # role: backend
+  template:
+    metadata:
+      labels:
+        app: apis 
+        # role: backend
+    spec:
+      containers:
+      - name: apis
+        image: ${my_image}
+        ports:
+        - containerPort: 8080
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apis-vc
+  namespace: salome
+spec:
+  selector:
+    app: apis
+  type: NodePort
+  ports:
+  - name: apis-port
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32000
+

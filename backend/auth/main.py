@@ -12,6 +12,8 @@ from fastapi.responses import RedirectResponse
 
 import pyfiglet
 
+from logger import *
+
 
 # from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
 
@@ -50,7 +52,13 @@ db.session.add_all([comment1, comment2, comment3, comment4])
 db.session.commit()
 """
 
-
+"""
+logging.debug('This is a debug message')
+logging.info('This is an info message')
+logging.warning('This is a warning message')
+logging.error('This is an error message')
+logging.critical('This is a critical message')
+"""
 
 # # os.chdir('/c/Users/user/Desktop/workspace/yara-datastorm/backend/apis/ml/')
 
@@ -92,9 +100,10 @@ async def docs():
     return RedirectResponse(url='/docs')
 
 
-@app.get('/ok')
-def ok(name:str,age:int):
-    return f"Test {name}"
+@app.get('/status')
+def status():
+    logger.info("{'status':'ok'}")
+    return {'status':'ok'}
 
 
 @app.get("/register")
@@ -102,8 +111,10 @@ def register():
     try:
         u = User(username='hey',firstname='hey',lastname='way',email='hway@gmail.com',password='00000000',bio='Sportif')
         admin_user = create_user(session, u)
-        return {"status": "ok"}
-    except:
+        logger.info(f"register {admin_user}") 
+        return {"msg": "user created"}
+    except Exception as e:
+        logger.error(f"{e}")
         raise "errorr"
 
 @app.get("/login")
@@ -111,10 +122,12 @@ def login(email:str='hway@gmail.com', password:str='00000000'):
     try:
         # u = {'email':'hway@gmail.com','password':'00000000'}
         u = {'email':email,'password':password}
-        
-        return {'status': f'{login_user(session, dict(u))}'}
+        user = login_user(session, dict(u))
+
+        logger.info(f"login {user}") 
+        return {'status': f'{user}'}
     except Exception as e:
-        # raise("error")
+        logger.error(f"{e}")
         return f"error {e}"
 
 

@@ -17,7 +17,7 @@ pipeline {
                         sh "docker rmi $(docker images -f 'dangling=true' -q)"
                     } catch (Exception e) {
                         echo 'Exception occurred: ' + e.toString() 
-                    }
+                    } 
                 } 
             }
         }

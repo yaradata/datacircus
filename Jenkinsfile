@@ -9,17 +9,17 @@ pipeline {
     stages {
         stage('Build') {
             steps{
-                sh "pwd"
-                sh "ls -la"
-                echo "${WORKSPACE}/backend/auth"
+                // build docker image
                 sh "cd  $auth_folder && docker build -t auth ."
+                // clean docker dangling image
+                sh "docker rmi $(docker images -f 'dangling=true' -q)"
             }
         }
 
         stage('Test') {
             steps{
-                sh "docker images"
-                sh "docker ps -a"
+                // run container 
+                sh "docker run -itd --name auth -p 5577:8080 auth:latest"
             }
         }
         

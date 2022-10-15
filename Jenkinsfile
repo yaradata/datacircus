@@ -6,7 +6,8 @@ pipeline {
             steps{
                 sh "pwd"
                 sh "ls -la"
-                sh "docker build -t auth -f Dockerfile ./backend/auth/"
+                sh "cd backend/auth"
+                sh "docker build -t auth ."
             }
         }
 

@@ -9,23 +9,37 @@ pipeline {
     stages {
         stage('Build') {
             steps{
-                // build docker image
+                // build docker image 
                 sh "cd  $auth_folder && docker build -t auth ."
                 // clean docker dangling image
-                sh "docker rmi $(docker images -f 'dangling=true' -q)"
+                script {
+                    try {
+                        sh "docker rmi $(docker images -f 'dangling=true' -q)"
+                    } catch (Exception e) {
+                        echo 'Exception occurred: ' + e.toString() 
+                    }
+                } 
             }
         }
 
         stage('Test') {
             steps{
                 // run container 
-                sh "docker run -itd --name auth -p 5577:8080 auth:latest"
+                script {
+                    try {
+                        sh "docker rm -f auth"
+                        sh "docker run -itd --name auth -p 5577:8080 auth:latest"
+                    } catch (Exception e) {
+                        sh "docker run -itd --name auth -p 5577:8080 auth:latest"
+                    }
+                } 
+                
             }
         }
         
         stage('Deploy') {
             steps{
-                echo "deploy"
+                echo "deploy" 
             }
         }
     }

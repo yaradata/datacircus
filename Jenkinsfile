@@ -1,13 +1,18 @@
 pipeline {
     agent any 
 
+    environment {
+        auth_folder = "${WORKSPACE}/backend/auth"
+        project_folder = "${WORKSPACE}/backend/project"
+    }
+
     stages {
         stage('Build') {
             steps{
                 sh "pwd"
                 sh "ls -la"
-                sh "cd backend/auth"
-                sh "docker build -t auth ."
+                echo "${WORKSPACE}/backend/auth"
+                sh "cd  $auth_folder && docker build -t auth ."
             }
         }
 

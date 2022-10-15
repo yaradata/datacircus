@@ -4,11 +4,11 @@ pipeline {
     stages {
         stage('Build') {
             steps{
-                echo "Hello"
+                sh "pwd"
+                sh "ls -la"
             }
         }
     }
-     
     
 }
 
